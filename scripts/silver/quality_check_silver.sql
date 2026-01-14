@@ -1,4 +1,16 @@
 /*
+Script Purpose: 
+    This script performs various quality checks for data consistency,accuracy and standarization 
+    across the 'silver' schema. It includes checks for: 
+        >>Null or duplicate primary keys
+        >>unwantes spaces
+        >>Date standarization
+        >>Invalid ranges
+        >> Data consistency between related fields
+*/
+
+
+/*
 =====================================================================
 crm.cust_info
 ======================================================================
