@@ -1,4 +1,5 @@
 📊 Proyecto Data Warehouse
+
 📌 Descripción general
 
 Este proyecto implementa un Data Warehouse en SQL siguiendo una arquitectura por capas Bronze / Silver / Gold. El objetivo es transformar datos operacionales de clientes, productos y compras (artículos de montaña/deporte) en un modelo analítico confiable, consistente y listo para consumo por herramientas de BI o análisis avanzado.
