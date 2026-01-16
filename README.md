@@ -1,113 +1,96 @@
-📊 Proyecto Data Warehouse
+# 📊 Proyecto Data Warehouse
 
-📌 Descripción general
+## 📌 Descripción general
 
-Este proyecto implementa un Data Warehouse en SQL siguiendo una arquitectura por capas Bronze / Silver / Gold. El objetivo es transformar datos operacionales de clientes, productos y compras (artículos de montaña/deporte) en un modelo analítico confiable, consistente y listo para consumo por herramientas de BI o análisis avanzado.
+Este proyecto implementa un **Data Warehouse en SQL** siguiendo una arquitectura por capas **Bronze / Silver / Gold**.  
+El objetivo es transformar datos operacionales de clientes, productos y compras (artículos de montaña/deporte) en un modelo analítico confiable, consistente y listo para consumo por herramientas de BI o análisis avanzado.
 
 El diseño prioriza:
 
-Trazabilidad de los datos
+- Trazabilidad de los datos  
+- Separación clara de responsabilidades por capa  
+- Reprocesabilidad y control de calidad  
 
-Separación clara de responsabilidades por capa
+---
 
-Reprocesabilidad y control de calidad
+## 🏗️ Arquitectura del Data Warehouse
 
-🏗️ Arquitectura del Data Warehouse
+El Data Warehouse se organiza en tres capas claramente diferenciadas: **Bronze**, **Silver** y **Gold**, cada una con una responsabilidad específica dentro del pipeline analítico.
 
-El Data Warehouse se organiza en tres capas claramente diferenciadas: Bronze, Silver y Gold, cada una con una responsabilidad específica dentro del pipeline analítico.
+---
 
-🔹 Bronze Layer (Raw / Ingesta)
+### 🔹 Bronze Layer (Raw / Ingesta)
 
-Objetivo: almacenar los datos originales tal como provienen de los sistemas fuente, sin transformaciones de negocio.
+**Objetivo:** almacenar los datos originales tal como provienen de los sistemas fuente, sin transformaciones de negocio.
 
-Tablas disponibles en Bronze:
+**Tablas disponibles en Bronze:**
 
-crm.cus_info – información básica de clientes (CRM)
+- `crm.cus_info` – información básica de clientes (CRM)
+- `crm_prd_info` – información de productos
+- `crm_sales_details` – detalle de ventas / transacciones
+- `erp.cust_az12` – información adicional de clientes (ERP)
+- `erp_loc_a101` – datos de localización / región
+- `erp_px_cat_g1v2` – catálogo y categorización de productos
 
-crm_prd_info – información de productos
+**Características:**
 
-crm_sales_details – detalle de ventas / transacciones
+- Datos crudos (raw)
+- Puede contener duplicados, inconsistencias y valores nulos
+- Incluye históricos completos
+- Sirve como respaldo y punto de reproceso
 
-erp.cust_az12 – información adicional de clientes (ERP)
+---
 
-erp_loc_a101 – datos de localización / región
+### 🔸 Silver Layer (Cleansed / Conformada)
 
-erp_px_cat_g1v2 – catálogo y categorización de productos
+**Objetivo:** limpiar, estandarizar e integrar los datos provenientes de Bronze.
 
-Características:
+**Tablas en Silver (mismas entidades que Bronze):**
 
-Datos crudos (raw)
+- `silver.crm_cus_info`
+- `silver.crm_prd_info`
+- `silver.crm_sales_details`
+- `silver.erp_cust_az12`
+- `silver.erp_loc_a101`
+- `silver.erp_px_cat_g1v2`
 
-Puede contener duplicados, inconsistencias y valores nulos
+**Transformaciones aplicadas:**
 
-Incluye históricos completos
+- Corrección de inconsistencias de datos
+- Tratamiento de valores nulos y datos faltantes
+- Normalización de tipos de datos
+- Estandarización de formatos (fechas, textos, claves)
+- Eliminación de duplicados
 
-Sirve como respaldo y punto de reproceso
+La capa Silver contiene datos **confiables y coherentes**, pero sin lógica analítica compleja.
 
-🔸 Silver Layer (Cleansed / Conformada)
+---
 
-Objetivo: limpiar, estandarizar e integrar los datos provenientes de Bronze.
+### 🟡 Gold Layer (Analytics / Business)
 
-Tablas en Silver (mismas entidades que Bronze):
+**Objetivo:** exponer datos listos para análisis mediante un **modelo dimensional en estrella (Star Schema)**.
 
-silver.crm_cus_info
+**Estructura Gold:**
 
-silver.crm_prd_info
+**Dimensiones**
+- `gold.dim_customers` – clientes consolidados (CRM + ERP)
+- `gold.dim_products` – productos y categorías
 
-silver.crm_sales_details
+**Tabla de hechos**
+- `gold.fact_sales` – ventas y métricas asociadas
 
-silver.erp_cust_az12
+**Características:**
 
-silver.erp_loc_a101
+- Joins entre entidades Silver
+- Claves analíticas estables
+- Métricas de negocio definidas
+- Datos optimizados para BI y análisis
 
-silver.erp_px_cat_g1v2
+---
 
-Transformaciones aplicadas:
+## 🛠️ Tecnologías utilizadas
 
-Corrección de inconsistencias de datos
+- SQL (motor relacional / cloud warehouse)
+- Vistas y/o tablas materializadas
+- Control de versiones (Git)
 
-Tratamiento de valores nulos y datos faltantes
-
-Normalización de tipos de datos
-
-Estandarización de formatos (fechas, textos, claves)
-
-Eliminación de duplicados
-
-La capa Silver contiene datos confiables y coherentes, pero sin lógica analítica compleja.
-
-🟡 Gold Layer (Analytics / Business)
-
-Objetivo: exponer datos listos para análisis mediante un modelo dimensional en estrella (Star Schema).
-
-Estructura Gold:
-
-Dimensiones
-
-gold.dim_customers – clientes consolidados (CRM + ERP)
-
-gold.dim_products – productos y categorías
-
-Tabla de hechos
-
-gold.fact_sales – ventas y métricas asociadas
-
-Características:
-
-Joins entre entidades Silver
-
-Claves analíticas estables
-
-Métricas de negocio definidas
-
-Datos optimizados para BI y análisis
-
-
-
-🛠️ Tecnologías utilizadas
-
-SQL (motor relacional / cloud warehouse)
-
-Vistas y/o tablas materializadas
-
-Control de versiones (Git)
